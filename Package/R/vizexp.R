@@ -73,8 +73,7 @@ vizexp <- function( genecount, metadata) {
     na.omit() %>%
     as_tibble() %>%
     column_to_rownames("gene") %>%
-    as.data.frame() %>%
-    select(-1)
+    as.data.frame() 
   
   #metadata = coldata
   # Note the metadata file must contain a column contained the samples ids named "sample"
@@ -202,9 +201,10 @@ vizexp <- function( genecount, metadata) {
     keep <- rowSums(counts(dds)) >= 10
     dds <- dds[keep,]
     dds <- DESeq(dds)
-    expression_data  <-  results(dds)
-    expression <- as.data.frame(expression_data)
-    expression <- rownames_to_column(expression, "gene")
+    expression <- results(dds) %>%
+                  as.data.frame() %>%
+                  rownames_to_column("gene")
+
     expression$diffexpressed <- "Not Significant"
     # MA plot
     output$ma_plot <- renderPlot({
